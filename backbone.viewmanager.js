@@ -35,11 +35,19 @@ BaseView.closeView = function () {
   // prevent endless recursive calls because of the 'remove' event
   if (Backbone.ViewManager.parent_of[this.cid] === undefined) return;
   this.trigger('closeView'); // run any custom cleanup functions
-  var children = this.subViews();
+  var children = this.subViews(),
+      parent = Backbone.ViewManager.parent_of[this.cid];
 
   // remove references from the view manager
   delete Backbone.ViewManager.parent_of[this.cid];
   delete Backbone.ViewManager.children_of[this.cid];
+
+  // remove from parent's list of children
+  if (parent){
+    var parents_children = Backbone.ViewManager.children_of[parent.cid];
+    var i = _(parents_children).indexOf(this);
+    if (i !== -1) parents_children.splice(i, 1);
+  }
 
   _(children).each(function (c) {
     c.closeView();

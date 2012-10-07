@@ -15,22 +15,27 @@ For the Backbone Manager to track views it's important to create them the correc
 
 Instead of creating a view like this:
 
-    var view = new App.Views.MyView({
-      model: some_model
-    });
+```javascript
+var view = new App.Views.MyView({
+  model: some_view
+});
+```
 
 Use `this.addSubview` to create a subview (where `this` is an instance of a View)
 
-    var view = this.addSubview( App.Views.MyView, {
-      model: some_model
-    });
+```javascript
+var view = this.addSubview( App.Views.MyView, {
+  model: some_model
+});
+```
 
 To create a view that does not have a parent. ie: a top-level view.
 
-    var view = Backbone.ViewManager.create( App.Views.MyView, {
-      model: some_model
-    });
-
+```javascript
+var view = Backbone.ViewManager.create( App.Views.MyView, {
+  model: some_model
+});
+```
 
 **NOTE:** a subview does not necesarily need to be a child element in the dom. Only a logical child.
 For example if your subview is a modal popup window, that's fine. Because you still want it to be cleaned up & removed when the parent view is closed.
@@ -43,24 +48,27 @@ Because if not, the closures still exist in memory, and that means the view stil
 The function we use is `view.viewBind`.
 Here's how to do it.
 
-    var MyView = Backbone.View.extend({
-        initialize: function () {
+```javascript
+var MyView = Backbone.View.extend({
+    initialize: function () {
 
-          // instead of binding directly to the model use this.viewBind
-          //this.model.bind('change', this.render);
-          this.viewBind(this.model, 'change', this.render);
+      // instead of binding directly to the model use this.viewBind
+      //this.model.bind('change', this.render);
+      this.viewBind(this.model, 'change', this.render);
 
-          // you can use viewBind for anything, not just models + collections
-          this.viewBind($(this.el), 'mouseover', this.showHover);
-        }
-      });
+      // you can use viewBind for anything, not just models + collections
+      this.viewBind($(this.el), 'mouseover', this.showHover);
+    }
+  });
+```
 
 By binding our event handlers in this way we ensure that they'll be cleaned up automatically when the view is destroyed.
 
 **NOTE:** by defaut viewBind uses 'bind/unbind' as the function names, but you can pass an optional fourth parameter to change this.
 
-    this.viewBind($(document), 'click', this.handleClick, ['on', 'off']);
-
+```javascript
+this.viewBind($(document), 'click', this.handleClick, ['on', 'off']);
+```
 ![chrome inspector](http://cl.ly/image/460b3h3m2j2j/content)
 
 ## Destroying Views
@@ -69,10 +77,12 @@ By binding our event handlers in this way we ensure that they'll be cleaned up a
 
 We can run a custom cleanup function by listening for the 'closeView' event in the view.
 
-    view.viewBind(view, 'closeView', function (){
-      alert("I run when the view is destroyed");
-    });
-    view.closeView();
+```javascript
+view.viewBind(view, 'closeView', function (){
+  alert("I run when the view is destroyed");
+});
+view.closeView();
+```
 
 **NOTE:** `closeView` can be configured to run automatically when the view's element is removed from the dom. It listens for the 'remove' event on the view's element.
 jQuery can be configured to trigger this event when removing elements from the dom.
@@ -80,23 +90,24 @@ jQuery can be configured to trigger this event when removing elements from the d
 
 ## Navigating the View Tree
 
-    this.subViews();    // returns an Array of views
-    this.parentView();  // returns a reference to the parent View
-
+```javascript
+this.subViews();    // returns an Array of views
+this.parentView();  // returns a reference to the parent View
+```
 ## Migrating to Backbone.ViewManager
 
 The first step is to make sure all views are being created correctly.
 This snippet will help you to track down rouge views that are being created the "old" way. Run it before any views are created.
-
-    var _configure = Backbone.View.prototype._configure;
-    Backbone.View.prototype._configure = function (options) {
-      if (options.viewManager !== true) {
-        console.warn('Warning: view created without the viewManager. Backbone.ViewManager cannot manage views if they are not created correctly.', this);
-        console.trace();
-      }
-      return _configure.apply(this, arguments);
-    };
-
+```javascript
+var _configure = Backbone.View.prototype._configure;
+Backbone.View.prototype._configure = function (options) {
+  if (options.viewManager !== true) {
+    console.warn('Warning: view created without the viewManager. Backbone.ViewManager cannot manage views if they are not created correctly.', this);
+    console.trace();
+  }
+  return _configure.apply(this, arguments);
+};
+```
 ![screenshot](http://cl.ly/image/0g0c2H0h1P11/content)
 
 ## Resources

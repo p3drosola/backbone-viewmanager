@@ -1,11 +1,11 @@
 # Backbone.ViewManager
 
 
-This ViewManger avoids zombie views, memory leaks & duplicate event bindings by performs serveral simple functions.
+This ViewManger avoids zombie views, memory leaks & duplicate event bindings by performing 3 main functions.
 
-- Keeps track of the view hirarchy
-- Creates view specific event bindings (will be cleaned up autmatically when the view is destroyed)
-- Cleans up child views when the parent is destroyed
+- keeping track of the view hirarchy
+- creating view specific event bindings (will be cleaned up autmatically when the view is destroyed)
+- cleaning up child views when the parent is destroyed
 
 It's really quite simple though, and just 1K when minified.
 
@@ -13,7 +13,7 @@ It's really quite simple though, and just 1K when minified.
 
 For the Backbone Manager to track views it's important to create them the correctly.
 
-Instead of creating view like this:
+Instead of creating a view like this:
 
     var view = new App.Views.MyView({
       model: some_model
@@ -28,7 +28,7 @@ Use `this.addSubview` to create a subview (where `this` is an instance of a View
 To create a view that does not have a parent. ie: a top-level view.
 
     var view = Backbone.ViewManager.create( App.Views.MyView, {
-      collection: some_collection
+      model: some_model
     });
 
 
@@ -55,11 +55,11 @@ Here's how to do it.
         }
       });
 
-By binding our event handlers in this way we ensure that they'll be cleaned up automatically when the view is detroyed.
+By binding our event handlers in this way we ensure that they'll be cleaned up automatically when the view is destroyed.
 
 ## Destroying Views
 
-`view.closeView` is the function that destroys a view, and clean up it's bindings, and all it's children;
+`view.closeView` is the function that destroys a view, cleans up it's bindings, and all it's children;
 
 We can run a custom cleanup function by listening for the 'closeView' event in the view.
 
@@ -82,7 +82,6 @@ jQuery can be configured to trigger this event when removing elements from the d
 The first step is to make sure all views are being created correctly.
 This snippet will help you to track down rouge views that are being created the "old" way. Run it before any views are created.
 
-    // helps migrate your code to use the ViewManager
     var _configure = Backbone.View.prototype._configure;
     Backbone.View.prototype._configure = function (options) {
       if (options.viewManager !== true) {

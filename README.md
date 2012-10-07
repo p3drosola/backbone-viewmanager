@@ -57,6 +57,9 @@ Here's how to do it.
 
 By binding our event handlers in this way we ensure that they'll be cleaned up automatically when the view is destroyed.
 
+**NOTE:** by defaut viewBind uses 'bind/unbind' as the function names, but you can pass an optional fourth parameter to change this.
+    this.viewBind($(document), 'click', this.doIt, ['on', 'off']);
+
 ## Destroying Views
 
 `view.closeView` is the function that destroys a view, cleans up it's bindings, and all it's children;

@@ -22,7 +22,7 @@ $(function (){
 
     changeColor: function () {
       var color = prompt('Type a CSS color. (eg: blue, red)');
-      le_model.set('color', color);
+      if (color) le_model.set('color', color);
     },
 
     render: function () {

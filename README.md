@@ -7,6 +7,7 @@ This ViewManger avoids zombie views, memory leaks & duplicate event bindings by 
 - Creates view specific event bindings (will be cleaned up autmatically when the view is destroyed)
 - Cleans up child views when the parent is destroyed
 
+It's really quite simple though, and just 1K when minified.
 
 ## View Creation
 

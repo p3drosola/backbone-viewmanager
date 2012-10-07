@@ -20,7 +20,6 @@ BaseView.addSubview = function (View, options) {
   $(view.el).bind('remove', view.closeView); // bind our closeView function
 
   Backbone.ViewManager.children_of[view.cid] = [];
-
   if (parent_view !== null){
     Backbone.ViewManager.children_of[parent_view.cid].push(view);
   }
@@ -33,9 +32,9 @@ BaseView.addSubview = function (View, options) {
  */
 BaseView.closeView = function () {
 
-  // prevent endless recursive calls because of the jquery on('remove') event
+  // prevent endless recursive calls because of the 'remove' event
   if (Backbone.ViewManager.parent_of[this.cid] === undefined) return;
-  this.trigger('closeView');  // run any custom cleanup functions
+  this.trigger('closeView'); // run any custom cleanup functions
   var children = this.subViews();
 
   // remove references from the view manager
@@ -111,5 +110,3 @@ Backbone.ViewManager.create = BaseView.addSubview;
 _.extend(Backbone.View.prototype, BaseView);
 
 }());
-
-

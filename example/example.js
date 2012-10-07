@@ -1,6 +1,6 @@
 $(function (){
 
-  le_model = new (Backbone.Model.extend({ defaults: {color: 'green'} }));
+  var le_model = new (Backbone.Model.extend({ defaults: {color: 'green'} }));
 
   var ListView = Backbone.View.extend({
     className: 'list',
@@ -10,7 +10,6 @@ $(function (){
     },
 
     initialize: function (options) {
-      this.title = (options.title || '') + _.uniqueId();
       _.bindAll(this);
     },
 
@@ -66,8 +65,7 @@ $(function (){
   });
 
   // initialize the baseview
-  base_view = Backbone.ViewManager.create(ListView, {});
-  $('body').html(base_view.render().el);
-
+  window.base_view = Backbone.ViewManager.create(ListView, {});
+  $('body').html(window.base_view.render().el);
 
 });

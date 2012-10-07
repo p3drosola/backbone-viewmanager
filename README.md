@@ -61,6 +61,8 @@ By binding our event handlers in this way we ensure that they'll be cleaned up a
 
     this.viewBind($(document), 'click', this.handleClick, ['on', 'off']);
 
+![chrome inspector](http://cl.ly/image/460b3h3m2j2j/content)
+
 ## Destroying Views
 
 `view.closeView` is the function that destroys a view, cleans up it's bindings, and all it's children;

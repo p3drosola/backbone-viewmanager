@@ -1,43 +1,13 @@
-/*
-
-Usage examples:
-
-// to create a sub view:
-
-var view = this.addSubview( Teambox.Apps.Dashboard.Views.Task, {
-  model: this.collection.get(id)
- ,className: 'whatever'
-});
-
-// to create a view that does not have a parent:
-
-var view = Backbone.ViewManager.addSubView( Teambox.Apps.Dashboard.Views.TaskList, {
- collection: tasks
-});
-
-this.subViews().length  // returns the number of subviews
-
-this.bind('closeView', function () {
-  alert("I run when the view is destroyed");
-});
-
-NOTE: a subview does not necesarily need to be a child element in the dom.
-For example if your subview is a modal window view, that's fine. It'll still get
-cleaned up & removed when the parent view is closed.
-
-*/
-
-
 (function () {
 
 var BaseView = {
-  _view_bindings:[]
+  _view_bindings: [] // keeps track of the view bindings
 };
 Backbone.ViewManager = {};
 
 /**
  * Creates a new child view
- * @param {Function} view creation function. eg: Backbone.View
+ * @param {Function} View creation function. eg: Backbone.View
  * @param {object} options to be passed to the view
  * @returns {Backbone.View instance}
  */
@@ -45,16 +15,16 @@ BaseView.addSubview = function (View, options) {
   var view, parent_view;
 
   view = new View(_.extend(options, {viewManager: true}));
-  parent_view = (this instanceof Backbone.View) ? this : false;
+  parent_view = (this instanceof Backbone.View) ? this : null;
 
-  $(view.el).on('remove', view.closeView); // bind our closeView function
+  $(view.el).bind('remove', view.closeView); // bind our closeView function
 
   Backbone.ViewManager.children_of[view.cid] = [];
 
-  if (parent_view){
+  if (parent_view !== null){
     Backbone.ViewManager.children_of[parent_view.cid].push(view);
-    Backbone.ViewManager.parent_of[view.cid] = parent_view;
   }
+  Backbone.ViewManager.parent_of[view.cid] = parent_view;
   return view;
 };
 
@@ -65,6 +35,7 @@ BaseView.closeView = function () {
 
   // prevent endless recursive calls because of the jquery on('remove') event
   if (Backbone.ViewManager.parent_of[this.cid] === undefined) return;
+  this.trigger('closeView');  // run any custom cleanup functions
   var children = this.subViews();
 
   // remove references from the view manager
@@ -82,8 +53,6 @@ BaseView.closeView = function () {
   }, this);
   this.unbind(); // unbind dom events
   this.remove(); // remove this.el from dom before removing children to avoid redraws
-
-  this.trigger('closeView');  // run any custom cleanup functions
 };
 
 
@@ -140,18 +109,6 @@ Backbone.ViewManager.create = BaseView.addSubview;
 
 // mixin to backbone views
 _.extend(Backbone.View.prototype, BaseView);
-
-
-
-// helps migrate your code to use the ViewManager
-var _configure = Backbone.View.prototype._configure;
-Backbone.View.prototype._configure = function (options) {
-  if (options.viewManager !== true) {
-    console.warn('Warning: view created without the viewManager. Backbone.ViewManager cannot manage views if they are not created correctly.', this);
-    console.trace();
-  }
-  return _configure.apply(this, arguments);
-};
 
 }());
 

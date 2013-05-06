@@ -1,5 +1,6 @@
 # Backbone.ViewManager
 
+> Note, you should probably not be using this code. It was written before things like `listenTo` were available. It's still a good conceptual exploration of the issues facing Backbone applications though. You can use it as a starting point for your solution, or just use something like Marrionette.
 
 This ViewManger avoids zombie views, memory leaks & duplicate event bindings by performing 3 main functions.
 
